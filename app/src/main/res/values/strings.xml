@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Cooking Time</string>
+    <string name="recipe_image">Recipe Image</string>
+    <string name="prev">Prev</string>
+    <string name="next">Next</string>
+    <string name="num_of_serving">Number of Serving</string>
+    <string name="ingredients_label">Ingredients:</string>
+    <string name="instruction_label">Instructions:</string>
+    <string name="add_widget">Add widget</string>
+    <string name="empty">Empty</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="no_recipe_selected">No Recipe Selected</string>
+</resources>
