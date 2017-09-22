@@ -3,6 +3,8 @@
     package="com.suhendro.cookingtime">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -52,7 +54,14 @@
             android:permission="android.permission.BIND_REMOTEVIEWS" />
         <service
             android:name=".widget.SelectRecipeService"
-            android:exported="false"></service>
+            android:exported="false" />
+
+        <receiver
+            android:name=".receiver.InternetConnectionReceiver" android:enabled="true">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
