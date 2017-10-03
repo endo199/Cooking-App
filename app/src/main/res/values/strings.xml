@@ -11,4 +11,6 @@
     <string name="appwidget_text">EXAMPLE</string>
     <string name="no_recipe_selected">No Recipe Selected</string>
     <string name="downloading_resources">Preparing Ingredients</string>
+    <string name="cooking_instruction">Cooking Instructions</string>
+    <string name="assign_recipe_to_widget">Recipe has been assigned to widget</string>
 </resources>

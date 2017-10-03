@@ -2,6 +2,7 @@ package com.suhendro.cookingtime;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -24,6 +25,7 @@ import timber.log.Timber;
 
 public class RecipeFragment extends Fragment {
 
+    public static final String SCROLL_POSITION = "SCROLL_POSITION";
     private Ingredient[] ingredients;
     private CookingStep[] cookingInstruction;
 
@@ -33,6 +35,8 @@ public class RecipeFragment extends Fragment {
 
     private Unbinder mBinder;
     private CookingInstructionClickListener mListener;
+
+    public RecipeFragment() {}
 
     public interface CookingInstructionClickListener {
         void onClick(int position);
@@ -62,25 +66,56 @@ public class RecipeFragment extends Fragment {
         };
 
         adapter = new DetailExpandableListAdapter(this.getActivity().getApplicationContext(), titles);
+
         ingredientsAndInstructionListView.setAdapter(adapter);
+        ingredientsAndInstructionListView.setGroupIndicator(null);
         ingredientsAndInstructionListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View view, int groupPosition, int childPosition, long id) {
+                if(groupPosition == 0)
+                    return false;
+
                 mListener.onClick(childPosition);
-                Timber.d("XXX group %d at item %d", groupPosition, childPosition);
                 return true;
             }
         });
-        // expand Instruction group
-        ingredientsAndInstructionListView.expandGroup(1);
+
+        if(savedInstanceState != null) {
+            Parcelable expandedListSavedState = savedInstanceState.getParcelable("ingredient-instruction");
+            ingredientsAndInstructionListView.onRestoreInstanceState(expandedListSavedState);
+
+            int firstVisiblePosition = savedInstanceState.getInt(SCROLL_POSITION, 0);
+            ingredientsAndInstructionListView.setSelection(firstVisiblePosition);
+        } else {
+            // expand Instruction group
+            ingredientsAndInstructionListView.expandGroup(1);
+        }
 
         return view;
+    }
+
+    @Override
+    public void onPause() {
+        Timber.d("XXX fragment onPause");
+        super.onPause();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         mBinder.unbind();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        final Parcelable expandedListViewState = ingredientsAndInstructionListView.onSaveInstanceState();
+        if (expandedListViewState != null)
+            outState.putParcelable("ingredient-instruction", expandedListViewState);
+
+        int firstVisiblePosition = ingredientsAndInstructionListView.getFirstVisiblePosition();
+        outState.putInt(SCROLL_POSITION, firstVisiblePosition);
+
+        super.onSaveInstanceState(outState);
     }
 
     public void setIngredients(Ingredient[] ingredients) {

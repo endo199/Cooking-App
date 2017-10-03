@@ -30,9 +30,9 @@ import static org.hamcrest.Matchers.not;
 @RunWith(AndroidJUnit4.class)
 public class CookingInstructionScreenTest {
     @Rule
-    public ActivityTestRule<CookingInstructionActivity> mActivityTestRule =
-            new ActivityTestRule<CookingInstructionActivity>(
-                    CookingInstructionActivity.class,
+    public ActivityTestRule<FullscreenActivity> mActivityTestRule =
+            new ActivityTestRule<FullscreenActivity>(
+                    FullscreenActivity.class,
                     true,
                     false
             );

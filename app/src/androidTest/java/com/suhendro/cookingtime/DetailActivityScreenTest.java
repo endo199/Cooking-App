@@ -89,7 +89,6 @@ public class DetailActivityScreenTest {
 
         mRecipe.setSteps(steps);
 
-
     }
 
     @Test
@@ -116,11 +115,10 @@ public class DetailActivityScreenTest {
                 .perform(click());
 
         instruction = (DetailInstructionFragment) mIntentTestRule.getActivity().getSupportFragmentManager().findFragmentById(R.id.frag_instruction);
-
         if(instruction == null) {
             // single pane
             intended(allOf(
-                    hasComponent(CookingInstructionActivity.class.getName()),
+                    hasComponent(FullscreenActivity.class.getName()),
                     hasExtra(DetailActivity.INSTRUCTION_IDX, 0)
             ));
         } else {
@@ -143,10 +141,18 @@ public class DetailActivityScreenTest {
                 .atPosition(step)
                 .perform(click());
 
-        intended(allOf(
-                hasComponent(CookingInstructionActivity.class.getName()),
-                hasExtra(DetailActivity.INSTRUCTION_IDX, step)
-        ));
+        instruction = (DetailInstructionFragment) mIntentTestRule.getActivity().getSupportFragmentManager().findFragmentById(R.id.frag_instruction);
+        if(instruction == null) {
+            intended(allOf(
+                    hasComponent(FullscreenActivity.class.getName()),
+                    hasExtra(DetailActivity.INSTRUCTION_IDX, step)
+            ));
+
+        } else {
+            // two pane
+            String text = mRecipe.getSteps()[step].getDescription();
+            onView(withId(R.id.tv_cooking_description)).check(matches(withText(text)));
+        }
     }
 
     @Test
@@ -162,9 +168,17 @@ public class DetailActivityScreenTest {
                 .atPosition(step)
                 .perform(click());
 
-        intended(allOf(
-                hasComponent(CookingInstructionActivity.class.getName()),
-                hasExtra(DetailActivity.INSTRUCTION_IDX, step)
-        ));
+        instruction = (DetailInstructionFragment) mIntentTestRule.getActivity().getSupportFragmentManager().findFragmentById(R.id.frag_instruction);
+        if(instruction == null) {
+            intended(allOf(
+                    hasComponent(FullscreenActivity.class.getName()),
+                    hasExtra(DetailActivity.INSTRUCTION_IDX, step)
+            ));
+
+        } else {
+            // two pane
+            String text = mRecipe.getSteps()[step].getDescription();
+            onView(withId(R.id.tv_cooking_description)).check(matches(withText(text)));
+        }
     }
 }

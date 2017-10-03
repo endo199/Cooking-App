@@ -42,6 +42,4 @@ public class MainActivityScreenTest {
         onView(withText("Ingredients:")).check(matches(isDisplayed()));
 
     }
-
-    // TODO: instrument to check long click of a recipe
 }

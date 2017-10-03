@@ -4,7 +4,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.Html;
+import android.text.Spanned;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -37,6 +40,9 @@ import timber.log.Timber;
  */
 
 public class DetailInstructionFragment extends Fragment {
+    public static final String STEP_POSITION = "STEP_POSITION";
+    public static final String PLAY_POSITION = "PLAY_POSITION";
+
     @BindView(R.id.vdo_instruction)
     SimpleExoPlayerView mVideo;
     @BindView(R.id.tv_cooking_description)
@@ -51,8 +57,6 @@ public class DetailInstructionFragment extends Fragment {
     private int mCurrentStep;
     private SimpleExoPlayer mPlayer;
 
-    private String userAgent;
-    private TransferListener<? super DataSource>  bandwidthMeter;
     private DataSource.Factory datasourceFactory;
     private ExtractorsFactory extractor;
 
@@ -68,8 +72,8 @@ public class DetailInstructionFragment extends Fragment {
         mPlayer = ExoPlayerFactory.newSimpleInstance(getContext(), trackSelector);
         mVideo.setPlayer(mPlayer);
 
-        userAgent = Util.getUserAgent(getContext(), "cook");
-        bandwidthMeter = new DefaultBandwidthMeter();
+        String userAgent = Util.getUserAgent(getContext(), "cook");
+        TransferListener<? super DataSource> bandwidthMeter = new DefaultBandwidthMeter();
         datasourceFactory = new DefaultDataSourceFactory(getContext(), userAgent, bandwidthMeter);
         extractor = new DefaultExtractorsFactory();
 
@@ -77,10 +81,34 @@ public class DetailInstructionFragment extends Fragment {
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        if(savedInstanceState != null) {
+            mCurrentStep = savedInstanceState.getInt(STEP_POSITION, 0);
+            mListInstruction = (CookingStep[]) savedInstanceState.getParcelableArray("list");
+            this.setStep(mCurrentStep);
+
+            long playPosition = savedInstanceState.getLong(PLAY_POSITION, 0);
+            mPlayer.seekTo(playPosition);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
         mPlayer.release();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        long playPosition = mPlayer.getCurrentPosition();
+        outState.putLong(PLAY_POSITION, playPosition);
+        outState.putInt(STEP_POSITION, mCurrentStep);
+
+        outState.putParcelableArray("list", mListInstruction);
     }
 
     @OnClick(R.id.btn_next_instruction)
@@ -132,7 +160,6 @@ public class DetailInstructionFragment extends Fragment {
             step = 0;
 
         CookingStep inst = mListInstruction[step];
-
         mCookingDescription.setText(inst.getDescription());
         if(inst.getVideoUrl() != null && inst.getVideoUrl().length() > 0) {
             mVideo.setVisibility(View.VISIBLE);

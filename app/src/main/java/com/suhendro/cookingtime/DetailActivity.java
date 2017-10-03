@@ -16,7 +16,6 @@ import com.suhendro.cookingtime.model.Recipe;
 
 import timber.log.Timber;
 
-// TODO: Up navigation dan onSaveSateInstance
 public class DetailActivity extends AppCompatActivity implements RecipeFragment.CookingInstructionClickListener {
     public static final String INSTRUCTION_KEY = "instructions";
     public static final String INSTRUCTION_IDX = "step";
@@ -33,12 +32,11 @@ public class DetailActivity extends AppCompatActivity implements RecipeFragment.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        ActionBar bar = getSupportActionBar();
-        bar.setDisplayHomeAsUpEnabled(true);
-
         if(savedInstanceState != null) {
             mRecipe = savedInstanceState.getParcelable("recipe");
             mInstructionStep = savedInstanceState.getInt("step", 0);
+
+            recipeFragment = (RecipeFragment) getSupportFragmentManager().getFragment(savedInstanceState, "recipeFragment");
         } else {
 
             Intent intentFromCaller = getIntent();
@@ -48,10 +46,13 @@ public class DetailActivity extends AppCompatActivity implements RecipeFragment.
                 return;
             }
             mRecipe = intentFromCaller.getParcelableExtra(MainActivity.SELECTED_RECIPE);
+
+            recipeFragment = new RecipeFragment();
         }
 
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle(mRecipe.getName());
+        ActionBar bar = getSupportActionBar();
+        bar.setDisplayHomeAsUpEnabled(true);
+        bar.setTitle(mRecipe.getName());
 
         instructionFragment = (DetailInstructionFragment) getSupportFragmentManager().findFragmentById(R.id.frag_instruction);
 
@@ -72,7 +73,7 @@ public class DetailActivity extends AppCompatActivity implements RecipeFragment.
             mInstructionStep = position;
             instructionFragment.setStep(mInstructionStep);
         } else {
-            Intent intent = new Intent(this, CookingInstructionActivity.class);
+            Intent intent = new Intent(this, FullscreenActivity.class);
             intent.putExtra(INSTRUCTION_KEY, mRecipe.getSteps());
             intent.putExtra(INSTRUCTION_IDX, position);
 
@@ -83,7 +84,10 @@ public class DetailActivity extends AppCompatActivity implements RecipeFragment.
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+
         outState.putParcelable("recipe", mRecipe);
         outState.putInt("step", mInstructionStep);
+
+        getSupportFragmentManager().putFragment(outState, "recipeFragment", recipeFragment);
     }
 }

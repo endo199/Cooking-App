@@ -67,7 +67,7 @@ public class DetailExpandableListAdapter extends BaseExpandableListAdapter {
 
     @Override
     public long getChildId(int group, int itemAt) {
-        return 0;
+        return itemAt;
     }
 
     @Override
@@ -79,11 +79,17 @@ public class DetailExpandableListAdapter extends BaseExpandableListAdapter {
     public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
         if(convertView == null) {
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.list_group, null);
+            convertView = inflater.inflate(R.layout.list_group, parent, false);
         }
 
         TextView groupTitle = (TextView) convertView.findViewById(R.id.lst_group);
         groupTitle.setText(getGroup(groupPosition).toString());
+
+        if(isExpanded) {
+            groupTitle.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_expand_less_black_24dp, 0);
+        } else {
+            groupTitle.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_expand_more_black_24dp, 0);
+        }
 
         return convertView;
     }
@@ -92,13 +98,14 @@ public class DetailExpandableListAdapter extends BaseExpandableListAdapter {
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         if(convertView == null) {
             LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.list_item, null);
+            convertView = inflater.inflate(R.layout.list_item, parent, false);
         }
 
         TextView item = (TextView) convertView.findViewById(R.id.lst_item);
         String text = null;
         if(groupPosition == 0) {
-            return convertView;
+            Ingredient ingredient = (Ingredient) getChild(groupPosition, childPosition);
+            text = ingredient.getName();
         } else {
             CookingStep cookingStep = (CookingStep) getChild(groupPosition, childPosition);
             text = cookingStep.getShortDescription();

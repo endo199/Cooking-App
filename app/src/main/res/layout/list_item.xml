@@ -14,5 +14,6 @@
         android:paddingRight="?android:attr/expandableListPreferredChildPaddingLeft"
         android:paddingStart="?android:attr/expandableListPreferredChildPaddingLeft"
         android:paddingTop="10dp"
+        android:textColor="@android:color/black"
         tools:text="Item" />
 </LinearLayout>

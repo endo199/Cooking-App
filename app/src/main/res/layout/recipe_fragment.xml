@@ -11,7 +11,5 @@
         android:layout_height="match_parent"
         android:divider="@android:color/darker_gray"
         android:dividerHeight="0.5dp"
-        android:headerDividersEnabled="true"
-        android:indicatorLeft="?android:attr/expandableListPreferredItemIndicatorLeft"
-        tools:indicatorLeft="?android:attr/expandableListPreferredItemIndicatorLeft" />
+        android:headerDividersEnabled="true" />
 </FrameLayout>
