@@ -37,12 +37,10 @@
                 <!--android:name="android.support.PARENT_ACTIVITY"-->
                 <!--android:value=".DetailActivity" />-->
         <!--</activity>-->
-
         <activity
             android:name=".FullscreenActivity"
             android:parentActivityName=".DetailActivity"
             android:label="@string/cooking_instruction"
-            android:configChanges="orientation|keyboardHidden|screenSize"
             android:theme="@style/FullscreenTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
