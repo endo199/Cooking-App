@@ -130,10 +130,12 @@ public class DetailInstructionFragment extends Fragment {
     @Override
     public void onResume() {
         Timber.d("XXX onResume");
-        super.onResume();
         if(mPlayer == null) {
             initPlayer();
         }
+        Timber.d("XXX selected step %d", this.mCurrentStep);
+        setStep(this.mCurrentStep);
+        super.onResume();
     }
 
     @Override
@@ -192,6 +194,11 @@ public class DetailInstructionFragment extends Fragment {
 
     protected void displayVideo(Uri uri) {
         Timber.d("XXX display video %s", uri.toString());
+        if(mPlayer == null) {
+            Timber.d("XXX player is null, don't execute request");
+            return;
+        }
+
         MediaSource mediaSource = new ExtractorMediaSource(uri, datasourceFactory, extractor, null, null);
 
         boolean isResume = window != C.INDEX_UNSET;
@@ -203,6 +210,7 @@ public class DetailInstructionFragment extends Fragment {
     }
 
     protected void displayInstruction(int step) {
+        Timber.d("XXX displayInstruction %d", step);
         if(step < 0)
             step = 0;
 

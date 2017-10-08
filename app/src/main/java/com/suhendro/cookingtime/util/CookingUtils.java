@@ -60,6 +60,11 @@ public class CookingUtils {
         } catch (FileNotFoundException e) {
             Timber.e("XXX error file not found %s", e.getMessage());
             e.printStackTrace();
+
+            Timber.d("XXX reset file availability");
+            SharedPreferences.Editor prefEditor = PreferenceManager.getDefaultSharedPreferences(context).edit();
+            prefEditor.putBoolean("json_available", false);
+            prefEditor.commit();
         }
         return null;
     }

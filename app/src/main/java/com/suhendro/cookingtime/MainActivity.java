@@ -154,9 +154,12 @@ public class MainActivity extends AppCompatActivity implements RecipeAdapter.Rec
         if (recipes != null) {
             mRecipes.addAll(recipes);
             mRecipeAdapter.notifyDataSetChanged();
-        }
 
-        showData();
+            showData();
+        } else {
+            Uri uri = Uri.parse(JSON_RESOURCE_URL);
+            CookingUtils.downloadRecipe(this, uri, this);
+        }
 
         return null;
     }

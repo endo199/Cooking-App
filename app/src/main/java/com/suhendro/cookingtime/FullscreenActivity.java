@@ -14,6 +14,8 @@ import android.view.View;
 
 import com.suhendro.cookingtime.model.CookingStep;
 
+import timber.log.Timber;
+
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
@@ -121,6 +123,7 @@ public class FullscreenActivity extends AppCompatActivity {
 
         if(savedInstanceState != null) {
             mStep = savedInstanceState.getInt("currentStep");
+            Timber.d("XXX step from savedInstanceState is %d", mStep);
             mInstructions = (CookingStep[]) savedInstanceState.getParcelableArray("list");
         } else {
             Intent intentFromCaller = getIntent();
@@ -132,6 +135,7 @@ public class FullscreenActivity extends AppCompatActivity {
             }
 
             mStep = intentFromCaller.getIntExtra(DetailActivity.INSTRUCTION_IDX, 0);
+            Timber.d("XXX step from intent is %d", mStep);
         }
         mInstructionFragment = (DetailInstructionFragment) getSupportFragmentManager().findFragmentById(R.id.frag_instruction);
 //        mInstructionFragment = new DetailInstructionFragment();
@@ -196,7 +200,18 @@ public class FullscreenActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        Timber.d("XXX Activity onStart with step %d", mStep);
         mInstructionFragment.setInstructions(mInstructions, mStep);
+    }
+
+    /**
+     * get current step from fragment, that information will be used at onResume by passing to
+     * fragment
+     */
+    @Override
+    protected void onStop() {
+        super.onStop();
+        mStep = mInstructionFragment.getCurrentStep();
     }
 
     @Override
@@ -204,6 +219,7 @@ public class FullscreenActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
 
         outState.putInt("currentStep", mInstructionFragment.getCurrentStep());
+        Timber.d("XXX current step at fragment %d", mInstructionFragment.getCurrentStep());
         outState.putParcelableArray("list", mInstructions);
     }
 }
